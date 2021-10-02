@@ -220,15 +220,16 @@ class Post(_StaticHtmlScraper):
         outdir = pathlib.Path(outdir)
         for i, (disp, vid) in enumerate(urls):
             is_vid = vid is not None
-            disp_resp = requests.get(disp, stream=True)
-            disp_fp = outdir / fmt(self, disp, is_vid, i)
-            self._validate_outpath(disp_fp, skip_exists)
-            self._download_photo(str(disp_fp), disp_resp)
             if is_vid:
                 vid_resp = requests.get(vid, stream=True)
                 vid_fp = outdir / fmt(self, vid, True, i)
                 self._validate_outpath(vid_fp, skip_exists)
                 self._download_video(str(vid_fp), vid_resp)
+            else:
+                disp_resp = requests.get(disp, stream=True)
+                disp_fp = outdir / fmt(self, disp, is_vid, i)
+                self._validate_outpath(disp_fp, skip_exists)
+                self._download_photo(str(disp_fp), disp_resp)
 
     @staticmethod
     def _validate_outpath(out: pathlib.Path, skip_exists: bool):
